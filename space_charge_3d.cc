@@ -13,11 +13,6 @@
 #include "space_charge_3d_open_hockney.h"
 #include "space_charge_3d_open_hockney_eigen.h"
 
-const int particles_per_rank = 100000;
-
-const double dummy_length = 2.1;
-const double dummy_reference_time = 0.345;
-
 double
 do_timing(Collective_operator& space_charge, Bunch const& bunch,
           double time_step, int verbosity, const char* name,
