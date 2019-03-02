@@ -287,7 +287,6 @@ Space_charge_3d_open_hockney_eigen::get_green_fn2_pointlike()
     const double coeff = 2.8;
     double G000 = coeff / std::min(hx, std::min(hy, hz));
 
-    const int num_images = 8;
     int mix, miy; // mirror indices for x- and y-planes
     double dx, dy, dz, G;
 
@@ -702,7 +701,6 @@ Space_charge_3d_open_hockney_eigen::apply(Bunch & bunch, double time_step,
     double t = simple_timer_current();
 
     setup_communication(bunch.get_comm_sptr());
-    int comm_compare;
     t = simple_timer_show(t, "sce-setup-communication");
 
     // bunch.convert_to_state(Bunch::fixed_t_bunch);
