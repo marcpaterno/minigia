@@ -1,0 +1,50 @@
+"/Applications/CLion 2019.1 EAP.app/Contents/bin/cmake/mac/bin/cmake" -DCMAKE_BUILD_TYPE=Release "-DOpenMP_CXX_FLAGS=-Xclang -fopenmp -I/usr/local/include " -DOpenMP_CXX_LIB_NAMES=omp -DOpenMP_omp_LIBRARY=/usr/local/lib/libomp.dylib -G "CodeBlocks - Unix Makefiles" /Users/paterno/repos/minigia
+-- The CXX compiler identification is AppleClang 10.0.0.10001145
+-- Check for working CXX compiler: /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++
+-- Check for working CXX compiler: /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ -- works
+-- Detecting CXX compiler ABI info
+-- Detecting CXX compiler ABI info - done
+-- Detecting CXX compile features
+-- Detecting CXX compile features - done
+-- Found MPI_CXX: /usr/local/Cellar/open-mpi/4.0.0/lib/libmpi.dylib (found version "3.1") 
+-- Found MPI: TRUE (found version "3.1")  
+-- Boost version: 1.68.0
+-- Found the following Boost libraries:
+--   system
+-- Found OpenMP_CXX: -Xclang -fopenmp -I/usr/local/include (found version "3.1") 
+-- Found OpenMP: TRUE (found version "3.1") found components:  CXX 
+-- Found FFTW3: /usr/local/lib/libfftw3.dylib  
+-- CMake version: 3.13.4
+-- The C compiler identification is AppleClang 10.0.0.10001145
+-- Check for working C compiler: /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/cc
+-- Check for working C compiler: /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/cc -- works
+-- Detecting C compiler ABI info
+-- Detecting C compiler ABI info - done
+-- Detecting C compile features
+-- Detecting C compile features - done
+-- Version: 5.1.0
+-- Build type: Release
+-- CXX_STANDARD: 14
+-- Performing Test has_std_14_flag
+-- Performing Test has_std_14_flag - Success
+-- Performing Test has_std_1y_flag
+-- Performing Test has_std_1y_flag - Success
+-- Performing Test SUPPORTS_VARIADIC_TEMPLATES
+-- Performing Test SUPPORTS_VARIADIC_TEMPLATES - Success
+-- Performing Test SUPPORTS_INITIALIZER_LIST
+-- Performing Test SUPPORTS_INITIALIZER_LIST - Success
+-- Performing Test SUPPORTS_ENUM_BASE
+-- Performing Test SUPPORTS_ENUM_BASE - Success
+-- Performing Test SUPPORTS_TYPE_TRAITS
+-- Performing Test SUPPORTS_TYPE_TRAITS - Success
+-- Performing Test SUPPORTS_USER_DEFINED_LITERALS
+-- Performing Test SUPPORTS_USER_DEFINED_LITERALS - Success
+-- Performing Test HAS_NULLPTR_WARNING
+-- Performing Test HAS_NULLPTR_WARNING - Success
+-- Performing Test HAS_GNU_UDL_WARNING
+-- Performing Test HAS_GNU_UDL_WARNING - Success
+-- Looking for open
+-- Looking for open - found
+-- Configuring done
+-- Generating done
+-- Build files have been written to: /Users/paterno/repos/minigia/cmake-build-release

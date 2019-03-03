@@ -1,131 +1,85 @@
-cmake_minimum_required(VERSION 3.9)
-project(MINIGIA)
-set(CMAKE_CXX_STANDARD 11)
+cmake_minimum_required(VERSION 3.13 FATAL_ERROR)
+project(MINIGIA LANGUAGES CXX)
+set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_CXX_STANDARD_REQUIRED  ON)
+#set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS_RELEASE} -Wall -Werror")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS_RELEASE} -Wall")
+set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -fno-math-errno  -march=native -mtune=native")
 list(APPEND CMAKE_MODULE_PATH "${MINIGIA_SOURCE_DIR}/CMake")
 
 if(DEFINES)
   add_definitions(${DEFINES})
 endif()
 
-#find_package(MPI REQUIRED CXX)
-find_package(MPI)
-find_package(Boost 1.41 REQUIRED)
-find_package(OpenMP)
+find_package(MPI REQUIRED)
+find_package(Boost 1.68 REQUIRED COMPONENTS system)
+find_package(OpenMP REQUIRED CXX)
+find_package(FFTW3 REQUIRED)
 
-option(SC "compile space charge benchmarks; requires FFTW" OFF)
-#if(SC)
-find_package(FFTW REQUIRED MPI)
-#endif()
-
-# chef
-option(CHEF "Use chef libraries" OFF)
-if(CHEF)
-find_package(CHEF REQUIRED)
-INCLUDE_DIRECTORIES(${CHEF_INCLUDE_DIR})
-LINK_DIRECTORIES(${CHEF_LIB_DIR})
-add_definitions(-DHAVE_CHEF)
-endif()
-
+include_directories(${FFTW3_INCLUDE_DIR})
+set(PARALLEL_FFTW_LIBRARIES ${FFTW3_MPI_LIBRARIES} ${FFTW3_LIBRARIES})
 configure_file("${MINIGIA_SOURCE_DIR}/bunch_data_paths.h.in"
                "${MINIGIA_BINARY_DIR}/bunch_data_paths.h" IMMEDIATE)
 
 add_executable(independent_particle
-               independent_particle.cc
-               bunch.h
-               commxx.cc
-               commxx.h
-               four_momentum.h
-               gsvector.h
-               multi_array_typedefs.h
-               reference_particle.h
-               restrict_extension.h)
+               independent_particle_main.cc
+               commxx.cc)
 target_include_directories(independent_particle PRIVATE ${MINIGIA_BINARY_DIR})
 target_include_directories(independent_particle PRIVATE vectorclass)
 target_include_directories(independent_particle PRIVATE eigen)
-target_link_libraries(independent_particle PRIVATE MPI::MPI_C)
-if(OpenMP_CXX_FOUND)
-  target_link_libraries(independent_particle PRIVATE OpenMP::OpenMP_CXX)
-endif()
-target_link_libraries(independent_particle PRIVATE ${CHEF_LIBS})
-target_link_libraries(independent_particle PRIVATE boost_system)
+target_link_libraries(independent_particle PRIVATE MPI::MPI_CXX)
+target_link_libraries(independent_particle PRIVATE OpenMP::OpenMP_CXX)
+target_link_libraries(independent_particle PRIVATE system)
+
+find_library(BENCHMARK benchmark)
+add_executable(independent_particle_benchmark
+               independent_particle_benchmark.cc
+               commxx.cc)
+target_include_directories(independent_particle_benchmark PRIVATE ${MINIGIA_BINARY_DIR} vectorclass eigen)
+target_link_libraries(independent_particle_benchmark PRIVATE MPI::MPI_CXX OpenMP::OpenMP_CXX system ${BENCHMARK})
 
 add_executable(populate
-    populate.cc
-    bunch.h
-    commxx.h
-    commxx.cc)
+               populate.cc
+               commxx.cc)
 target_include_directories(populate PRIVATE ${MINIGIA_BINARY_DIR})
 target_include_directories(populate PRIVATE eigen)
-target_link_libraries(populate PRIVATE MPI::MPI_C)
-if(OpenMP_CXX_FOUND)
-  target_link_libraries(populate PRIVATE OpenMP::OpenMP_CXX)
-endif()
+target_link_libraries(populate PRIVATE MPI::MPI_CXX)
+target_link_libraries(populate PRIVATE OpenMP::OpenMP_CXX)
 
-add_subdirectory(fftwpp)
 add_subdirectory(fmt)
+#add_subdirectory(fftwpp)
 
-add_executable(fft
-    fft-main.cc
-    commxx.cc
-    commxx.h
-    distributed_fft3d.h
-    distributed_fft3d.cc
-    multi_array_typedefs.h)
-target_link_libraries(fft PRIVATE ${FFTW_LIBRARIES})
-target_link_libraries(fft PRIVATE MPI::MPI_C)
-target_include_directories(fft PRIVATE eigen)
-target_link_libraries(fft PRIVATE fftwpp)
-target_link_libraries(fft PRIVATE fmt)
+#add_executable(fft
+#               fft-main.cc
+#               commxx.cc
+#               distributed_fft3d.cc)
+#target_include_directories(fft PRIVATE ${FFTW3_INCLUDE_DIR})
+#target_include_directories(fft PRIVATE eigen)
+#target_link_libraries(fft PRIVATE ${PARALLEL_FFTW_LIBRARIES})
+#target_link_libraries(fft PRIVATE MPI::MPI_CXX)
+#target_link_libraries(fft PRIVATE fftwpp)
+#target_link_libraries(fft PRIVATE fmt)
 
-if(SC)
-add_executable(space_charge_3d
-               space_charge_3d.cc
-               space_charge_3d_open_hockney.cc
-               #space_charge_3d_open_hockney.h
-               space_charge_3d_open_hockney_eigen.cc
-               #space_charge_3d_open_hockney_eigen.h
-               commxx.cc
-               #commxx.h
-               commxx_divider.cc
-               #commxx_divider.h
-               core_diagnostics.cc
-               #core_diagnostics.h
-               deposit.cc
-               #deposit.h
-               distributed_fft3d.cc
-               #distributed_fft3d.h
-               distributed_fft3d_eigen.cc
-               #distributed_fft3d_eigen.h
-               distributed_rectangular_grid.cc
-               #distributed_rectangular_grid.h
-               #distributed_rectangular_grid_eigen.cc
-               #distributed_rectangular_grid_eigen.h
-               #interpolate_rectangular_zyx.h
-               #math_constants.h
-               #multi_array_offsets.h
-               rectangular_grid.cc
-               #rectangular_grid.h
-               #rectangular_grid_eigen.h
-               rectangular_grid_domain.cc
-               #rectangular_grid_domain.h
-               #rectangular_grid_domain_eigen.cc
-               #rectangular_grid_domain_eigen.h
-               #simple_timer.h
-               space_charge_3d.cc
-               space_charge_3d_open_hockney.cc
-               #bunch.h
-               #four_momentum.h
-               #gsvector.h
-               #multi_array_typedefs.h
-               #physical_constants.h
-               #reference_particle.h
-               #restrict_extension.h
-               )
-target_include_directories(space_charge_3d PRIVATE ${MINIGIA_BINARY_DIR})
-target_include_directories(space_charge_3d PRIVATE vectorclass)
-target_include_directories(space_charge_3d PRIVATE eigen)
-target_link_libraries(space_charge_3d PRIVATE MPI::MPI_C)
-target_link_libraries(space_charge_3d PRIVATE ${FFTW_LIBRARIES})
-endif()
-
-#add_subdirectory(tests)
+#add_executable(space_charge_3d
+#               space_charge_3d.cc
+#               space_charge_3d_open_hockney.cc
+#               space_charge_3d_open_hockney_eigen.cc
+#               commxx.cc
+#               commxx_divider.cc
+#               core_diagnostics.cc
+#               deposit.cc
+#               distributed_fft3d.cc
+#               distributed_fft3d_eigen.cc
+#               distributed_rectangular_grid.cc
+#               #distributed_rectangular_grid_eigen.cc
+#               rectangular_grid.cc
+#               rectangular_grid_domain.cc
+#               #rectangular_grid_domain_eigen.cc
+#               space_charge_3d.cc
+#               space_charge_3d_open_hockney.cc
+#               )
+#target_include_directories(space_charge_3d PRIVATE ${MINIGIA_BINARY_DIR})
+#target_include_directories(space_charge_3d PRIVATE vectorclass)
+#target_include_directories(space_charge_3d PRIVATE eigen)
+#target_link_libraries(space_charge_3d PRIVATE MPI::MPI_CXX)
+#target_link_libraries(space_charge_3d PRIVATE ${PARALLEL_FFTW_LIBRARIES})
