@@ -1,6 +1,6 @@
 NAME = fnalacceleratormodeling/minigia-base
 
-VERSION = 0.1
+VERSION = 0.2
 
 .PHONY: all build tag_latest release test
 

@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.13 FATAL_ERROR)
+cmake_minimum_required(VERSION 3.12 FATAL_ERROR)
 project(MINIGIA LANGUAGES CXX)
 set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_CXX_STANDARD_REQUIRED  ON)
@@ -11,8 +11,8 @@ if(DEFINES)
   add_definitions(${DEFINES})
 endif()
 
-find_package(MPI REQUIRED)
-find_package(Boost 1.68 REQUIRED COMPONENTS system)
+find_package(MPI REQUIRED CXX)
+find_package(Boost 1.66 REQUIRED COMPONENTS system)
 find_package(OpenMP REQUIRED CXX)
 find_package(FFTW3 REQUIRED)
 
@@ -29,14 +29,14 @@ target_include_directories(independent_particle PRIVATE vectorclass)
 target_include_directories(independent_particle PRIVATE eigen)
 target_link_libraries(independent_particle PRIVATE MPI::MPI_CXX)
 target_link_libraries(independent_particle PRIVATE OpenMP::OpenMP_CXX)
-target_link_libraries(independent_particle PRIVATE system)
+target_link_libraries(independent_particle PRIVATE boost_system)
 
 find_library(BENCHMARK benchmark)
 add_executable(independent_particle_benchmark
                independent_particle_benchmark.cc
                commxx.cc)
 target_include_directories(independent_particle_benchmark PRIVATE ${MINIGIA_BINARY_DIR} vectorclass eigen)
-target_link_libraries(independent_particle_benchmark PRIVATE MPI::MPI_CXX OpenMP::OpenMP_CXX system ${BENCHMARK})
+target_link_libraries(independent_particle_benchmark PRIVATE MPI::MPI_CXX OpenMP::OpenMP_CXX boost_system ${BENCHMARK})
 
 add_executable(populate
                populate.cc
